@@ -21,3 +21,7 @@ ______________
 
 subreddit("askreddit") = the category / subject where you want to load your api from
 .hot(limit = 10) = the amount of messages you want to get/show
+
+
+___________ PLOTS IN PANDAS ___________
+

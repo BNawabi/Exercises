@@ -1,0 +1,909 @@
+
+<!DOCTYPE HTML>
+<html>
+  <head>
+  
+    <meta charset="utf-8" />
+        
+    <title>SkyLounge Amsterdam</title>
+    
+    <meta name="description" content="Drinks, Bites &amp; Views." />
+	<meta name="keywords" content="Drinks, Bites &amp; Views." />
+    
+    <link rel="pingback" href="http://www.skyloungeamsterdam.com/xmlrpc.php" />
+    
+    <!-- IE Fix for HTML5 Tags -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link href="http://vjs.zencdn.net/4.4/video-js.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/style.css" />
+    
+    <script src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/lib/js/scrollability.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	 <script src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/lib/js/stellar.js"></script>     
+    <script src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/lib/js/jquery.event.special.js"></script>
+    <script src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/lib/js/jquery.easng.min.js"></script>
+    <script src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/lib/js/waypoints.min.js"></script>
+    <script src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/lib/js/jquery.columnizer.js"></script>
+    
+    <script type='text/javascript'>
+	  jQuery(document).ready(function($) {
+			
+			$('#wrappercontent').columnize({
+			width : 370,
+			height : 365
+			});
+			
+			currentcolumn = 1;
+			document.getElementById('foodslider').scrollLeft = 0;
+			$('#wrappercontent > div.food-column:empty').remove();
+			columncount = $("#wrappercontent > div.food-column").length - 2;
+			
+			if (columncount < 1) {
+				$('#foodsliderbuttonprev').hide(); $('#foodsliderbuttonnext').hide();
+			} else {
+				$('#foodsliderbuttonprev').hide(); 
+				$('#foodsliderbuttonnext').show();
+			}
+			
+			$(function(){
+			  $('#foodmenu nav ul li a').click(function(){
+			  var $mainCat = $(this).attr('value');
+			  var $currentlang = 'nl';
+			
+			  //$("#wrappercontent").empty();
+				  $.ajax({
+					  url:"/wp-content/themes/wp3/lib/foodloader.php",
+					  type:'POST',
+					  data:'main_catid=' + $mainCat + '&currentlang=' + $currentlang,
+					  success:function(response) {
+						  //alert(response);
+						  $("#wrappercontent").html(response);
+						  
+						  $('#wrappercontent').columnize({
+							width : 370,
+							height : 365
+							});
+							
+							document.getElementById('foodslider').scrollLeft = 0;
+							$('#wrappercontent > div.food-column:empty').remove();
+							columncount = $("#wrappercontent > div.food-column").length;
+							
+							console.log(columncount);
+							
+							if (columncount <= 3) {
+								$('#foodsliderbuttonprev').hide(); $('#foodsliderbuttonnext').hide();
+							} else {
+								$('#foodsliderbuttonprev').hide(); 
+								$('#foodsliderbuttonnext').show();
+							}
+							
+							currentcolumn = 3;
+					  }
+				  });
+			  });
+			});
+			
+			var nextbuttonfood = document.getElementById('foodsliderbuttonnext');
+			var prevbuttonfood = document.getElementById('foodsliderbuttonprev');
+			
+           nextbuttonfood.onclick = function () {
+				  if (columncount >= currentcolumn) {
+                	document.getElementById('foodslider').scrollLeft += 420;
+					console.log('# ' + columncount);
+					console.log('~ ' + currentcolumn);
+					currentcolumn += 1;
+				  }
+					if (columncount == currentcolumn) { 
+						$('#foodsliderbuttonprev').show(); $('#foodsliderbuttonnext').hide();
+					} else if (currentcolumn == 1) {
+						$('#foodsliderbuttonprev').hide(); $('#foodsliderbuttonnext').show();
+					} else if (columncount <= 1) {
+						$('#foodsliderbuttonprev').hide(); $('#foodsliderbuttonnext').hide();
+					} else {
+						$('#foodsliderbuttonprev').show(); $('#foodsliderbuttonnext').show();
+					}
+           };
+
+           prevbuttonfood.onclick = function () {
+					if (columncount >= currentcolumn) {
+						document.getElementById('foodslider').scrollLeft -= 420;
+						currentcolumn -= 1;
+					}
+					if (columncount == currentcolumn) { 
+						$('#foodsliderbuttonprev').show(); $('#foodsliderbuttonnext').hide();
+					} else if (currentcolumn == 1) {
+						$('#foodsliderbuttonprev').hide(); $('#foodsliderbuttonnext').show();
+					} else if (columncount <= 1) {
+						$('#foodsliderbuttonprev').hide(); $('#foodsliderbuttonnext').hide();
+					} else {
+						$('#foodsliderbuttonprev').show(); $('#foodsliderbuttonnext').show();
+					}
+           };
+			
+			
+			
+			var $things = $('.waypoint');
+
+			$things.waypoint(function(direction) {
+			  if (direction === 'down') {
+				var wayID = $(this).attr('id');
+				$('#menu nav ul li a.active').removeClass('active');
+				$('#menu nav ul li a[href=#'+wayID+']').addClass('active');
+			  }
+			}, { offset: 400 });
+			
+			$things.waypoint(function(direction) {
+			  if (direction === 'up') {
+				var wayID = $(this).attr('id');
+				$('#menu nav ul li a.active').removeClass('active');
+				$('#menu nav ul li a[href=#'+wayID+']').addClass('active');
+			  }
+			}, { offset: -400 });
+			
+				  
+			$("#playvideo").click(function(event) {
+				$('#vidcurtain').fadeIn(700);
+				$('#vidcontainer').fadeIn(700);
+				var myPlayer = videojs("vidplayer"); myPlayer.currentTime(0.1); myPlayer.play();
+			});
+			
+			$("#vidcurtain").click(function(event) {
+				$('#vidcurtain').fadeOut(700);
+				$('#vidcontainer').fadeOut(700);
+				var myPlayer = videojs("vidplayer"); myPlayer.pause();
+			});
+			
+		});
+	</script>
+    
+    <script>
+			$(function(){
+								$.stellar({
+					horizontalScrolling: false,
+					verticalOffset: 0,
+					responsive: true,
+				});
+				$(".scrollto").click(function(event){
+				   event.preventDefault();
+				
+				   var dest=0;
+				   if($(this.hash).offset().top > $(document).height()-$(window).height()){
+						dest=$(document).height()-$(window).height();
+				   }else{
+						dest=$(this.hash).offset().top;
+				   }
+				   //go to destination
+				   $('html,body').animate({scrollTop:dest}, 1000,'swing');
+				   
+			   });
+				
+							});
+		    </script>
+    
+    <script src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/lib/js/fadeSlideShow.js"></script>
+    
+	<script src="http://vjs.zencdn.net/4.4/video.j"></script>
+
+  <style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='columns-css'  href='http://www.skyloungeamsterdam.com/wp-content/plugins/columns/columns.css?ver=4.8.7' type='text/css' media='all' />
+<link rel='stylesheet' id='fancybox-css'  href='http://www.skyloungeamsterdam.com/wp-content/plugins/easy-fancybox/css/jquery.fancybox.1.3.22.min.css' type='text/css' media='screen' />
+<script type='text/javascript' src='http://www.skyloungeamsterdam.com/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
+<script type='text/javascript' src='http://www.skyloungeamsterdam.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<link rel='https://api.w.org/' href='http://www.skyloungeamsterdam.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.skyloungeamsterdam.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.skyloungeamsterdam.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 4.8.7" />
+<link rel="alternate" href="http://www.skyloungeamsterdam.com/en/" hreflang="en" />
+<link rel="alternate" href="http://www.skyloungeamsterdam.com/nl/" hreflang="nl" />
+<link rel="alternate" href="http://www.skyloungeamsterdam.com/de/" hreflang="de" />
+<link rel="alternate" href="http://www.skyloungeamsterdam.com/fr/" hreflang="fr" />
+<link rel="alternate" href="http://www.skyloungeamsterdam.com/" hreflang="x-default" />
+  </head>
+  <body>	<header>
+    	<div id="maxmenu">
+          <div id="logo"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/skylounge.png" alt="Skylounge Hilton Amsterdam" width="380px"/></div>
+          <div class="social">
+              <a href="https://www.facebook.com/SkyLoungeAmsterdam" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/facebook.png" width="20px"/></a>
+              <a href="https://twitter.com/SkyloungeAms" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/twitter.png" width="20px"/></a>
+              <a href="http://www.tripadvisor.nl/Restaurant_Review-g188590-d4259991-Reviews-SkyLounge_at_DoubleTree_by_Hilton_Hotel_Amsterdam_Centraal_Station-Amsterdam_Nort.html" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/trip.png" width="20px"/></a>
+              <a href="http://instagram.com/skyloungeamsterdam" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/instagram.png" width="20px"/></a>
+              <a href="https://plus.google.com/109158009134452555430/posts#109158009134452555430/posts" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/googleplus.png" width="20px"/></a>
+              <a href="http://pinterest.com/SkyLoungeAmscs/boards/" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/pinterest.png" width="20px"/></a>
+              <a href="https://foursquare.com/v/skylounge/4de6588a18389f0558772bbf" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/foursquare.png" width="20px"/></a>
+          </div>
+          <div id="menu">
+              <nav>
+                  <ul>
+                  	
+			          						<li><a class="scrollto" href="#6">HOME</a></li>
+                      						<li style="width:160px;"><a class="scrollto" href="#8">ETEN &#038; DRINKEN</a></li>
+                      						<li><a class="scrollto" href="#3389">NEW YEAR</a></li>
+                      						<li><a class="scrollto" href="#10">EVENTS</a></li>
+                      						<li><a class="scrollto" href="#12">CONTACT</a></li>
+                                            <div><a class="" href="http://www.skyloungeamsterdam.com/nl/">NL</a> / <a class="" href="http://www.skyloungeamsterdam.com/en/">EN</a></div>
+                  </ul>
+              </nav>
+          </div>
+        </div>
+    </header>
+
+    
+              <div id="vidcurtain" class="hide"></div>
+              <div id="vidcontainer" class="hide">
+                  <video id="vidplayer" class="video-js vjs-default-skin" controls preload="none" height="505px" width="900px" poster="my_video_poster.png" data-setup="{}">
+                        <source src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/vid/skylounge_en.mp4" type='video/mp4'>
+                        <source src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/vid/skylounge_en.webm" type='video/webm'>
+                  </video>
+              </div>
+
+        	
+			
+            <section id="6" class="pages">
+              <ul class="cinema cinema6" data-stellar-ratio="0.5">
+
+              <li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Skylounge_contact_0027.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Skylounge_contact_0066.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Skylounge_contact_0034.jpg /></li>              </ul><br clear="all" />
+
+
+              							
+              
+              
+
+                            <a href="" class="nextslide nextslide6" data-stellar-ratio="0.5"></a>
+              <a href="" class="prevslide prevslide6" data-stellar-ratio="0.5"></a>
+              
+              <div class="content contentfade">
+
+				                    	<div class="contentcontainer">
+                  <div id="pl-6"  class="panel-layout" ><div id="pg-6-0"  class="panel-grid panel-no-style" ><div id="pgc-6-0-0"  class="panel-grid-cell panel-grid-cell-empty" ></div><div id="pgc-6-0-1"  class="panel-grid-cell" ><div id="panel-6-0-1-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="0" ><h3 class="widget-title">Ontdek Amsterdam van Bovenaf-</h3><div class="textwidget"></div></div></div></div><div id="pg-6-1"  class="panel-grid panel-no-style" ><div id="pgc-6-1-0"  class="panel-grid-cell" ><div id="panel-6-1-0-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child" data-index="1" ><div class="textwidget"><p><strong>openingstijden</strong>Zondag t/m dinsdag<br />11.00 - 1.00 uur<br />Woensdag en donderdag<br />11.00 - 2.00 uur<br />Vrijdag en zaterdag<br />11.00 - 3.00 uur </p></div></div><div id="panel-6-1-0-1" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce" data-index="2" ><div class="textwidget"><p><strong>contact</strong>Oosterdoksstraat 4 <br />1011 DK Amsterdam<br />Netherlands<br />T +31 20 530 0875<br /><a href="mailto:amscs.events@hilton.com" target="_blank">amscs.events@hilton.com</a></p>
+<p> </p>
+<p>Reserveren is mogelijk vanaf 20 personen.</p></div></div><div id="panel-6-1-0-2" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-last-child" data-index="3" ><div class="textwidget"><p> </p><p><img style="line-height: 1.5em;" src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/wifi.png" alt="we have wifi" /></p></div></div></div><div id="pgc-6-1-1"  class="panel-grid-cell" ><div id="panel-6-1-1-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child" data-index="4" ><div class="textwidget"><p><strong>VERWACHTING</strong></p>
+</div></div><div id="panel-6-1-1-1" class="weather-bottom so-panel widget widget_icit_weather_widget icit_weather_widget panel-last-child" data-index="5" >				
+				<!-- ICIT Weather Widget Wrapper -->
+				<div class="weather-wrapper">
+						
+										
+												
+						<div class="main no-break">
+							<div class="weather-temperature">
+								14&deg;C							</div>
+							<div class="weather-icon">
+								<div class="icit-icon icit_icon-CloudySun"></div>								<div class="weather-location">
+									<span class="weather-city">Amsterdam</span> <br><span class="weather-country">Netherlands</span>								</div>
+							</div>
+						</div>
+						
+												
+												<div class="weather-forecast">
+														<div class="weather-forecast-day">
+								<div class="forecast-day">
+									<strong>di</strong>
+								</div>
+								
+								<div class="forecast-temp">
+									14&deg;C								</div>
+								
+								<div class="forecast-icon">
+									<div class="icit-icon icit_icon-Rain"></div>								</div>
+							</div>
+														<div class="weather-forecast-day">
+								<div class="forecast-day">
+									<strong>wo</strong>
+								</div>
+								
+								<div class="forecast-temp">
+									16&deg;C								</div>
+								
+								<div class="forecast-icon">
+									<div class="icit-icon icit_icon-Rain"></div>								</div>
+							</div>
+														<div class="weather-forecast-day">
+								<div class="forecast-day">
+									<strong>do</strong>
+								</div>
+								
+								<div class="forecast-temp">
+									14&deg;C								</div>
+								
+								<div class="forecast-icon">
+									<div class="icit-icon icit_icon-Rain"></div>								</div>
+							</div>
+													</div>
+												
+					
+					<!-- Last updated at 00:00 on 1 January, 1970 -->
+				</div> </div></div><div id="pgc-6-1-2"  class="panel-grid-cell" ><div id="panel-6-1-2-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child" data-index="6" ><div class="textwidget"><p><em>Elke wereldstad heeft een unieke plek om de stad van boven te ontdekken en te bewonderen. In Amsterdam is dat SkyLounge Amsterdam, een award winning roof-top lounge bar uitkijkend over deze unieke wereldstad. Dit is de plek waar Amsterdam-mers en reizigers vanuit de hele wereld samenkomen! De SkyLounge biedt 365 dagen per jaar een panoramisch uitzicht over de meest energieke stad van Europa. Reserveren is alleen mogelijk voor groepen vanaf 20 personen!<br /></em></p></div></div><div id="panel-6-1-2-1" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-last-child" data-index="7" ><div class="textwidget"><p style="text-align: right;"><div class="column-group columns-2"> <div class="column column-number-1 column-span-1"><p> Overdag is het de perfecte locatie voor al uw afspraken, zowel zakelijk als privé! Geniet van een kop Buscaglione-koffie of een gerecht uit de verfijnde lunchkaart. Wilt u met vrienden relaties of collega’s komen borrelen? Onze geraffineerde cocktails, sublieme wijnen, verfijnde hapjes en kleine gerechten zorgen voor een onvergetelijke ervaring! Als het aankomt op het Amsterdamse nachtleven, draait de SkyLounge op volle toeren. Elke avond mixen onze Dj’s en Cocktailshakers de perfecte atmosfeer, en maken ze van de SkyLounge een energieke lounge-club. </p>
+</div> <div class="column column-number-2 last column-span-1"><p>Zondag t/m dinsdag zijn wij geopend van 11.00 uur tot 1.00 uur. Woensdag en donderdag tot 2.00 uur en op vrijdag en zaterdagavond gaan wij nog iets langer door en zijn wij geopend tot 3.00 uur. Gratis WiFi en top-Dj’s vanaf 21:00 maken de SkyLounge geschikt voor elke ontmoeting! Kom en ervaar zelf waarom SkyLounge Amsterdam namens het publiek verkozen is tot Amsterdams’ Beste Hotelbar van 2017. Reserveren is alleen mogelijk voor groepen vanaf 20 personen.</p>
+</div> </div></p></div></div></div></div></div>                  	</div>
+                  
+                  
+                  
+
+				  
+              </div>
+          </section>
+
+                        	<div id="scrollplease" data-stellar-ratio="3"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/scroll.png" alt="please scroll down"/></div>
+            
+            
+            <section id="8" class="pages">
+              <ul class="cinema cinema8" data-stellar-ratio="0.5">
+
+              <li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Skylounge_food_0075.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Skylounge_food_0013-e1472474481683.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2014/02/Skylounge_food_0021.jpg /></li>              </ul><br clear="all" />
+
+
+               <div id="pfood" class="poverlay"  data-stellar-ratio="0.6" ><h1>ETEN &#038; DRINKEN</h1></div>							
+                            <div id="pfood2" class="poverlay" data-stellar-ratio="0.6"><h6>
+
+                            De SkyLounge biedt u en uw gasten een onvergetelijke ervaring op het gebied van eten en drinken. Onze geraffineerde cocktails, sublieme wijnen, verfijnde hapjes en kleine gerechten zorgen voor een echte kosmopolitische ervaring!		
+              </h6></div>
+              
+              
+
+                            <a href="" class="nextslide nextslide8" data-stellar-ratio="0.5"></a>
+              <a href="" class="prevslide prevslide8" data-stellar-ratio="0.5"></a>
+              
+              <div class="content">
+
+				  
+                  
+                                		<div class="sectionheader"><h2>Bekijk ons bijzondere aanbod</h2></div>
+					                  <div id="foodmenu">
+                  	<nav>
+                    		<ul>
+						  		<li><a value="39" >ETEN</a></li><li><a value="28" >FRISDRANKEN</a></li><li><a value="26" >KOFFIE &amp; THEE</a></li><li><a value="30" >COCKTAILS</a></li><li><a value="594" >DIGESTIEVEN</a></li><li><a value="32" >GEDESTILLEERD</a></li><li><a value="34" >BIEREN</a></li><li><a value="36" >WIJN &amp; CHAMPAGNE</a></li><li><a value="43" >LIKEUREN</a></li><li><a value="45" >WHISKEYS</a></li>                      	</ul>
+                    	</nav>
+                   </div>
+
+                   <div class="nextslide" id="foodsliderbuttonnext"></div>
+              		 <div class="prevslide" id="foodsliderbuttonprev"></div>
+
+                     <div id="foodslider">
+                        <div id="wrappercontent">
+                        
+																<div class="foodcategory food-dontend">ALL DAY MENU (11:00 - 23:00 / FRI-SAT 11:00 - 00:00)</div>
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Croque Monsieur</div>
+								   <div class="foodprice">&euro; 14.00</div>
+									<div class="fooddescription">Gruyère cheese, mustard and ham</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Tom Kha kai</div>
+								   <div class="foodprice">&euro; 14.00</div>
+									<div class="fooddescription">coconut soup, grilled chicken, shiitake, beansprout and cilantro</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Pork belly</div>
+								   <div class="foodprice">&euro; 14.50</div>
+									<div class="fooddescription">pork belly panggang with beansprouts, pak choi and cilantro</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Caesar salad</div>
+								   <div class="foodprice">&euro; 16.00</div>
+									<div class="fooddescription">Romaine lettuce, anchovies, Parmesan cheese, poached egg, croutons and served with bread & butter<br />
+add grilled chicken or pan-fried giant prawns € 4.50 </div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Gambas</div>
+								   <div class="foodprice">&euro; 18.00</div>
+									<div class="fooddescription">marinated in piri piri, aioli and lemon</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Pumpkin risotto</div>
+								   <div class="foodprice">&euro; 14.00</div>
+									<div class="fooddescription">risotto with pumpkin, anise mushrooms and tarragon oil</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Crispy Peking duck</div>
+								   <div class="foodprice">&euro; 14.00</div>
+									<div class="fooddescription">crispy Peking duck, steamed rice pancakes, cucumber and a sauce of cassis and star anise</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Sliders, mini burgers 3 pcs</div>
+								   <div class="foodprice">&euro; 17.50</div>
+									<div class="fooddescription">small MRIJ beef burgers served with caramelized Cevennes onions, crispy bacon and Cheddar cheese<br />
+add French fries from the “FRIETBOUTIQUE” € 7.50</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Blue corn tortilla 3 pcs</div>
+								   <div class="foodprice">&euro; 16.50</div>
+									<div class="fooddescription">with spicy meat stew and a fresh salad</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Hotdogs 3 pcs</div>
+								   <div class="foodprice">&euro; 19.00</div>
+									<div class="fooddescription">Hotdogs of Berkshire pig with smoked ketchup and coleslaw</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Flammkuchen pulled chicken</div>
+								   <div class="foodprice">&euro; 14.00</div>
+									<div class="fooddescription">with pulled chicken, crème fraiche, red onion and bbq sauce</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Flammkuchen vegetables</div>
+								   <div class="foodprice">&euro; 12.00</div>
+									<div class="fooddescription">with mascarpone, rosemary oil and grilled vegetables</div>
+								</div>
+
+														
+																<div class="foodcategory food-dontend">HAPJES (11:00 - 23:00 / Vrij-Za 11:00 - 00:00)</div>
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Veal ”Bitterballen” from ”Kellenaers” 6 pcs</div>
+								   <div class="foodprice">&euro; 9.50</div>
+									<div class="fooddescription">served with mustard mayonnaise</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Crunchy chicken 6 pcs</div>
+								   <div class="foodprice">&euro; 9.50</div>
+									<div class="fooddescription">with ginger and garlic</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Fried mix platter 16 pcs</div>
+								   <div class="foodprice">&euro; 27,50</div>
+									<div class="fooddescription">4 veal "Bitterballen", 4 crunchy chicken, 4 V.S.O.P. cheese croquettes and 4 torpedo gambas</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Fried Dutch &#8220;Kibbeling&#8221; 6 pcs</div>
+								   <div class="foodprice">&euro; 9.50</div>
+									<div class="fooddescription">fried cod in a crunchy breading served with horseradish sauce</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Nachos</div>
+								   <div class="foodprice">&euro; 12.50</div>
+									<div class="fooddescription">corn chips with cheese, tomato, jalapeños, guacamole and sour cream</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Grilled chicken sausage</div>
+								   <div class="foodprice">&euro; 12.00</div>
+									<div class="fooddescription">with jalapeños, Manchego cheese served with pickled onions and a bell pepper salsa</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">French fries from the &#8221;FRIETBOUTIQUE&#8221;</div>
+								   <div class="foodprice">&euro; 7.50</div>
+									<div class="fooddescription">with Hellmann's mayonnaise and Hellmann's tomato ketchup</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Cheese platter from Fromagerie L&#8217;amuse &#8220;Betty&#8217;s Choice&#8221;</div>
+								   <div class="foodprice">&euro; 16.00</div>
+									<div class="fooddescription">Betty's choice of cheese, served with fig bread and grapes</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Fine de Claire No.2 oysters from &#8220;David Hervé&#8221; 6 pcs</div>
+								   <div class="foodprice">&euro; 20.00</div>
+									<div class="fooddescription">served with red wine vinegar and lemon</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Fine de Claire No.2 oysters from &#8220;David Hervé&#8221; 12 pcs</div>
+								   <div class="foodprice">&euro; 35.00</div>
+									<div class="fooddescription">served with red wine vinegar and lemon</div>
+								</div>
+
+														
+																<div class="foodcategory food-dontend">SKY SUSHI (11:00 - 23:00 / FRI-SAT 11:00 - 00:00)</div>
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Tuna roll 8 pcs</div>
+								   <div class="foodprice">&euro; 19.00</div>
+									<div class="fooddescription">with tuna, avocado, cucumber and sesame</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Spicy crab roll 8 pcs</div>
+								   <div class="foodprice">&euro; 19.00</div>
+									<div class="fooddescription">with surimi and cucumber</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Smoked eel 8 pcs</div>
+								   <div class="foodprice">&euro; 19.00</div>
+									<div class="fooddescription">terriyaki of smoked eel with sweet sour from rettich and<br />
+avocado<br />
+</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Sushi mix platter 24 pcs</div>
+								   <div class="foodprice">&euro; 47.00</div>
+									<div class="fooddescription">tuna roll (8), spicy crab roll (8) and smoked eel (8)</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Crunchy tuna crackers 4 pcs</div>
+								   <div class="foodprice">&euro; 13.00</div>
+									<div class="fooddescription">with Albacore tuna tartare, daikon cress and black sesame</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Poke bowl salmon 1 bowl</div>
+								   <div class="foodprice">&euro; 15.00</div>
+									<div class="fooddescription">white rice with Norwegian salmon, avocado, mango, soybeans, seaweed salad and crispy onions</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Poke bowl tuna 1 bowl</div>
+								   <div class="foodprice">&euro; 16.00</div>
+									<div class="fooddescription">white rice with marinated tuna, avocado, mango, soybeans, seaweed salad and crispy onions</div>
+								</div>
+
+														
+																<div class="foodcategory food-dontend">SWEETS (11:00 - 23:00 / Vrij-Za 11:00 - 00:00)</div>
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">&#8216;Stroopwafel&#8217; éclair</div>
+								   <div class="foodprice">&euro; 6.00</div>
+									<div class="fooddescription">with cream of the famous ‘stroopwafel’</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Apple pie</div>
+								   <div class="foodprice">&euro; 5.50</div>
+									<div class="fooddescription">homemade apple pie with cinnamon, raisins and whipped cream</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Fudge cake</div>
+								   <div class="foodprice">&euro; 6.00</div>
+									<div class="fooddescription">with white chocolate cream and salted caramel</div>
+								</div>
+
+														
+																<div class="foodcategory food-dontend">Ice cream hand crafted by award winning Patissier Leek served in a bucket - 225ml (11:00 - till closing time)</div>
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Banana, coconut and praline</div>
+								   <div class="foodprice">&euro; 8.50</div>
+									<div class="fooddescription"></div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Lemon, mango and strawberry (lactose free)</div>
+								   <div class="foodprice">&euro; 8.50</div>
+									<div class="fooddescription"></div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">White chocolate, pistachio and oreo cookies</div>
+								   <div class="foodprice">&euro; 8.50</div>
+									<div class="fooddescription"></div>
+								</div>
+
+														
+																<div class="foodcategory food-dontend">NIGHT (23:00 - till closing time)</div>
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Mixed nuts</div>
+								   <div class="foodprice">&euro; 7.50</div>
+									<div class="fooddescription">SkyLounge Amsterdam Japanese mix</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Marinated olives</div>
+								   <div class="foodprice">&euro; 7.50</div>
+									<div class="fooddescription"></div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Chicken Yakatori 8 pcs</div>
+								   <div class="foodprice">&euro; 12.50</div>
+									<div class="fooddescription">chicken marinated in sweet chilli sauce</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Nachos</div>
+								   <div class="foodprice">&euro; 12.50</div>
+									<div class="fooddescription">corn chips with cheese, tomato, jalapeños, guacamole and sour cream</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Pizza Margherita</div>
+								   <div class="foodprice">&euro; 17.50</div>
+									<div class="fooddescription">tomato sauce and cheese</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Pizza 4 cheeses</div>
+								   <div class="foodprice">&euro; 17.50</div>
+									<div class="fooddescription">tomato sauce and four different kind of cheeses</div>
+								</div>
+
+							
+								
+								<div class="foodpost food-dontsplit">
+									<div class="foodtitle">Pizza Pepperoni</div>
+								   <div class="foodprice">&euro; 17.50</div>
+									<div class="fooddescription">tomato sauce, pepperoni sausage and cheese</div>
+								</div>
+
+														                        </div>
+                  </div>
+                  
+
+				                    <div class="sectionfooter">
+                    <div class="verticalallign">
+                        <div class="verticalallign">
+                            <h5>-"Eindelijk heeft Amsterdam, zoals elke wereldstad, een bar & restaurant op hoog niveau. Letterlijk dan, want de SkyLounge stijgt behoorlijk boven de stad uit."</h5><a href="http://www.specialbite.com" target="_blank">www.specialbite.com</a>
+                        </div>
+                  </div>
+                  
+              </div>
+          </section>
+
+            
+            
+            <section id="3389" class="pages">
+              <ul class="cinema cinema3389" data-stellar-ratio="0.5">
+
+              <li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2016/11/Skylounge_nye.jpg /></li>              </ul><br clear="all" />
+
+
+              							 <div id="pspecial" class="poverlay" style="text-align:center;"><h1>NEW YEAR'S EVE</h1></div>
+              
+              
+
+              
+              <div class="content contentfade">
+
+				                    	<div class="contentcontainer">
+                  <div id="pl-3389"  class="panel-layout" ><div id="pg-3389-0"  class="panel-grid panel-no-style" ><div id="pgc-3389-0-0"  class="panel-grid-cell" ><div id="panel-3389-0-0-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="0" ><div class="textwidget"><p style="text-align: center;"><em>Vier dit jaar Oud &amp; Nieuw in de gold, glitter en glamour atmosfeer in SkyLounge Amsterdam </em></p>
+<p style="text-align: center;"><em>met Amsterdam aan uw voeten!</em></p>
+</div></div></div></div><div id="pg-3389-1"  class="panel-grid panel-no-style" ><div id="pgc-3389-1-0"  class="panel-grid-cell panel-grid-cell-empty" ></div><div id="pgc-3389-1-1"  class="panel-grid-cell" ><div id="panel-3389-1-1-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child" data-index="1" ><div class="textwidget"><p><strong>Gold, Glitter &amp; Glamour</strong></p>
+<p>Laat het feest beginnen in uw gouden outfit met een glas Champagne. Geniet van een prachtig uitzicht, cocktails en een live DJ. Dans het nieuwe jaar in met uw dierbaren en vergeet niet de avond vast te leggen. Momenten zoals deze gaan een leven lang mee! Verwen jezelf met oesters die onze oestermeisjes voor u klaarmaken en geniet van het waanzinnige uitzicht.</p>
+<p>&nbsp;</p>
+<p>Dress code: Touch of gold, glitter &amp; glamour</p>
+</div></div><div id="panel-3389-1-1-1" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-last-child" data-index="2" ><div class="textwidget"><p>De deuren zijn open van 21:00 tot 22:00 uur. Tafels zijn beschikbaar voor de allereerste gasten. Deze kunnen niet gereserveerd worden. Wees er vroeg bij als u de kans op een tafel niet wilt missen!</p>
+</div></div></div><div id="pgc-3389-1-2"  class="panel-grid-cell panel-grid-cell-mobile-last" ><div id="panel-3389-1-2-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child" data-index="3" ><div class="textwidget"><p><strong>Tickets </strong></p>
+<p>Entreeticket € 150.00 per persoon inclusief glas Champagne en een surprise bite. Exclusief overige consumpties.</p>
+<p>&nbsp;</p>
+<p>Een combinatie ticket van € 240.00 per persoon bevat een diner bij Eastwood Beer &amp; Grill (gelegen op de begane grond) met een variatie aan gerechten en een seafood bar plus entree voor onze Gold, Glitter &amp; Glamour party in SkyLounge Amsterdam na het diner.</p>
+</div></div><div id="panel-3389-1-2-1" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-last-child" data-index="4" ><div class="textwidget"><p>De voorverkoop van de tickets gaat maandag 1 oktober om 11 uur ’s ochtends live! <a href="https://www.eventbrite.nl/e/gold-glitter-glamour-new-years-eve-skylounge-amsterdam-tickets-50166359933?aff=ebdshpsearchautocomplete">Koop hier uw ticket</a></p>
+</div></div></div><div id="pgc-3389-1-3"  class="panel-grid-cell panel-grid-cell-empty" ></div></div></div>                  	</div>
+                  
+                  
+                  
+
+				  
+              </div>
+          </section>
+
+                        	<div id="scrollplease" data-stellar-ratio="3"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/scroll.png" alt="please scroll down"/></div>
+            
+            
+            <section id="10" class="pages">
+              <ul class="cinema cinema10" data-stellar-ratio="0.5">
+
+              <li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Skylounge_event_4.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Skylounge_event_diner03.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/Doubletree-Frans-Mark-4-e1401291034766.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/sax.jpg /></li>              </ul><br clear="all" />
+
+
+               <div id="pevents" class="poverlay" ><h1>EVENTS</h1></div>							
+              
+              
+
+                            <a href="" class="nextslide nextslide10" data-stellar-ratio="0.5"></a>
+              <a href="" class="prevslide prevslide10" data-stellar-ratio="0.5"></a>
+              
+              <div class="content">
+
+				                    	<div class="contentcontainer">
+                  <div id="pl-10"  class="panel-layout" ><div id="pg-10-0"  class="panel-grid panel-no-style" ><div id="pgc-10-0-0"  class="panel-grid-cell" ><div id="panel-10-0-0-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="0" ><h3 class="widget-title">EVENT OP GROTE HOOGTE</h3><div class="textwidget"></div></div></div></div><div id="pg-10-1"  class="panel-grid panel-no-style" ><div id="pgc-10-1-0"  class="panel-grid-cell" ><div id="panel-10-1-0-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child" data-index="1" ><div class="textwidget"><p><em>Van vergadering tot bedrijfsfeest. Het zuidelijke gedeelte van de SkyLounge is dé locatie voor een uniek event op grote hoogte. Een  panoramisch uitzicht met een gegarandeerd wow-effect!</em></p></div></div><div id="panel-10-1-0-1" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-last-child" data-index="2" ><div class="textwidget"><p>&gt; Zien wat er te doen is? <a href="https://www.facebook.com/SkyLoungeAmsterdam/events" target="_blank">Bekijk onze agenda</a></p>
+<p>&gt; Stay on top en voeg je toe aan de SkyLounge Amsterdam <a href="http://us6.forward-to-friend.com/forward?u=58f13a6ffce93e20dc32ad3a9&amp;id=f5e02a0c59" target="_blank">friends list</a>.</p></div></div></div><div id="pgc-10-1-1"  class="panel-grid-cell" ><div id="panel-10-1-1-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="3" ><div class="textwidget"><p><strong>Bruiloften</strong> Trouwen = SkyLounge Amsterdam! Op uw belangrijkste dag zorgen wij voor een perfect georganiseerde bruiloft op hoog niveau.<b> </b>Het hotel is gecertificeerd als een officiële trouwlocatie wat betekent dat zelfs de ambtelijke ceremonie bij ons kan plaatsvinden.  </p></div></div></div><div id="pgc-10-1-2"  class="panel-grid-cell" ><div id="panel-10-1-2-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="4" ><div class="textwidget"><p><strong>Borrels en recepties</strong> Gezellig komen borrelen met een groep vrienden, relaties  of collega’s? De SkyLounge is de perfecte locatie om te socializen en te netwerken. Reserveren is mogelijk voor groepen vanaf 20 personen. </p></div></div></div></div><div id="pg-10-2"  class="panel-grid panel-no-style" ><div id="pgc-10-2-0"  class="panel-grid-cell" ><div id="panel-10-2-0-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="5" ><div class="textwidget"><p><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/wifi.png" alt="we have wifi" /></p></div></div></div><div id="pgc-10-2-1"  class="panel-grid-cell" ><div id="panel-10-2-1-0" class="so-panel widget widget_text panel-first-child panel-last-child" data-index="6" ><h3 class="widget-title">Overige</h3>			<div class="textwidget"><p>De SkyLounge Amsterdam is er voor iedereen.<br />
+Reserveren is alleen mogelijk voor groepen vanaf 20 personen. Voor meer informatie over data en beschikbaarheid, neem contact op met SkyLounge Amsterdam via email, <br /> <a href="mailto:amscs.events@hilton.com">amscs.events@hilton.com</a> of per telefoon: +31 (0)20 5300875.</p>
+</div>
+		</div></div></div></div>                  	</div>
+                  
+                  
+                  
+
+				                    <div class="sectionfooter">
+                    <div class="verticalallign">
+                        <div class="verticalallign">
+                            <h5>-"SkyLounge Amsterdam gekozen door het publiek als beste Hotelbar van Amsterdam in 2017."</h5><a href="http://besthotelbar.com/past-hotel-bar-award-winners/" target="_blank">besthotelbar.com/past-hotel-bar-award-winners/</a>
+                        </div>
+                  </div>
+                  
+              </div>
+          </section>
+
+            
+            
+            <section id="12" class="pages lastpage">
+              <ul class="cinema cinema12" data-stellar-ratio="0.5">
+
+              <li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/windowlettering.jpg /></li><li><img src=http://www.skyloungeamsterdam.com/wp-content/uploads/2013/12/cityviewsunset.jpg /></li>              </ul><br clear="all" />
+
+
+               <div id="pcontact" class="poverlay" ><h1>CONTACT</h1></div>							
+              
+                            <div id="playvideo" data-stellar-ratio="3"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/play.png" alt="Play Video."/></div>
+              
+
+                            <a href="" class="nextslide nextslide12" data-stellar-ratio="0.5"></a>
+              <a href="" class="prevslide prevslide12" data-stellar-ratio="0.5"></a>
+              
+              <div class="content">
+
+				                    	<div class="contentcontainercontact">
+                  <div id="pl-12"  class="panel-layout" ><div id="pg-12-0"  class="panel-grid panel-no-style" ><div id="pgc-12-0-0"  class="panel-grid-cell" ><div id="panel-12-0-0-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="0" ><div class="textwidget"><p><strong>CONTACTINFORMATIE</strong>SkyLounge Amsterdam</p>
+<p>Oosterdoksstraat 4, 1011 DK Amsterdam</p>
+<p>T +31 (0)20 5300875</p>
+<p>E <a href="mailto:amscs.events@hilton.com">amscs.events@hilton.com</a></p>
+<p> </p>
+<p>Reserveren is mogelijk vanaf 20 personen.</p></div></div></div><div id="pgc-12-0-1"  class="panel-grid-cell" ><div id="panel-12-0-1-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="1" ><div class="textwidget"><center><a href="http://amsterdam.doubletree.com" target="_blank"><img alt="" src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/hilton.png" /></a></center></div></div></div><div id="pgc-12-0-2"  class="panel-grid-cell" ><div id="panel-12-0-2-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child" data-index="2" ><div class="textwidget"><p><strong>OPENINGSTIJDEN</strong>Zondag t/m dinsdag 11.00 - 1.00 uur</p><p>Woensdag en donderdag 11.00 - 2.00 uur</p><p>Vrijdag en zaterdag 11.00 - 3.00 uur</p><p>Zien wat er te doen is? Bekijk onze agenda</p></div></div><div id="panel-12-0-2-1" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-last-child" data-index="3" ><div class="textwidget"><p>Op de hoogte blijven? Volg ons:</p>
+<p><a href="https://www.facebook.com/SkyLoungeAmsterdam" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/facebook.png" alt="" width="20px" /></a> <a href="https://twitter.com/SkyloungeAms" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/twitter.png" alt="" width="20px" /></a> <a href="https://foursquare.com/v/skylounge/4de6588a18389f0558772bbf" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/foursquare.png" alt="" width="20px" /></a> <a href="http://instagram.com/skyloungeamsterdam" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/instagram.png" alt="" width="20px" /></a> <a href="http://www.tripadvisor.nl/Restaurant_Review-g188590-d4259991-Reviews-SkyLounge_at_DoubleTree_by_Hilton_Hotel_Amsterdam_Centraal_Station-Amsterdam_Nort.html" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/trip.png" alt="" width="20px" /></a> <a href="https://plus.google.com/109158009134452555430/posts#109158009134452555430/posts" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/googleplus.png" alt="" width="20px" /></a> <a href="http://pinterest.com/SkyLoungeAmscs/boards/" target="new"><img src="http://www.skyloungeamsterdam.com/wp-content/themes/wp3/img/social/pinterest.png" alt="" width="20px" /></a></p></div></div></div><div id="pgc-12-0-3"  class="panel-grid-cell" ><div id="panel-12-0-3-0" class="so-panel widget widget_black-studio-tinymce widget_black_studio_tinymce panel-first-child panel-last-child" data-index="4" ><div class="textwidget"><p><strong>REIZEN &amp; PARKEREN</strong>Je vindt ons op de 11e verdieping van het DoubleTree by Hilton Amsterdam Centraal Station op het Oosterdokseiland (net naast Amsterdam Centraal Station). Wanneer u met de auto bent, kunt u parkeren onder het hotel in de openbare parkeergarage ‘<a href="http://www.parkingcentrumoosterdok.nl/" target="_blank" rel="noopener">Oosterdok Parking</a>’..</p></div></div></div></div></div>                  	</div>
+                  
+                  
+                  
+
+				  
+              </div>
+          </section>
+
+            
+            
+    
+</body>
+
+<script>
+    
+  	$('.cinema6').fadeSlideShow({autoplay:false, controlClass:6});
+  	$('.cinema8').fadeSlideShow({autoplay:false, controlClass:8});
+  	$('.cinema3389').fadeSlideShow({autoplay:false, controlClass:3389});
+  	$('.cinema10').fadeSlideShow({autoplay:false, controlClass:10});
+  	$('.cinema12').fadeSlideShow({autoplay:false, controlClass:12});
+  </script>
+
+<script>
+   // Les-Nerds
+	
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-89244360-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<!-- Google Analytics Local by Webcraftic Local Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','http://www.skyloungeamsterdam.com/wp-content/plugins/simple-google-analytics/cache/local-ga.js','ga');
+ga('create', 'UA-48074757-1', 'auto');
+ga('set', 'anonymizeIp', true);
+ga('send', 'pageview');
+</script>
+<!-- end Google Analytics Local by Webcraftic Local Google Analytics -->
+                <style type="text/css" media="all"
+                       id="siteorigin-panels-layouts-footer">/* Layout 6 */ #pgc-6-0-0 { width:39.9838%;width:calc(39.9838% - ( 0.60016220600162 * 0px ) ) } #pgc-6-0-1 { width:60.0162%;width:calc(60.0162% - ( 0.39983779399838 * 0px ) ) } #pl-6 #panel-6-0-1-0 , #pl-6 #panel-6-1-0-0 , #pl-6 #panel-6-1-0-1 , #pl-6 #panel-6-1-0-2 , #pl-6 #panel-6-1-1-0 , #pl-6 #panel-6-1-1-1 , #pl-6 #panel-6-1-2-0 , #pl-6 #panel-6-1-2-1 {  } #pg-6-0 , #pl-6 .so-panel , #pl-6 .so-panel:last-child { margin-bottom:0px } #pgc-6-1-0 { width:19.0652%;width:calc(19.0652% - ( 0.80934809348093 * 0px ) ) } #pgc-6-1-1 { width:20.7872%;width:calc(20.7872% - ( 0.79212792127921 * 0px ) ) } #pgc-6-1-2 { width:60.1476%;width:calc(60.1476% - ( 0.39852398523986 * 0px ) ) } /* Layout 3389 */ #pgc-3389-0-0 { width:100%;width:calc(100% - ( 0 * 0px ) ) } #pl-3389 #panel-3389-0-0-0 , #pl-3389 #panel-3389-1-1-0 , #pl-3389 #panel-3389-1-1-1 , #pl-3389 #panel-3389-1-2-0 , #pl-3389 #panel-3389-1-2-1 {  } #pg-3389-0 , #pl-3389 .so-panel , #pl-3389 .so-panel:last-child { margin-bottom:0px } #pgc-3389-1-0 { width:6.0407%;width:calc(6.0407% - ( 0.93959335713177 * 0px ) ) } #pgc-3389-1-1 { width:43.9593%;width:calc(43.9593% - ( 0.56040664286823 * 0px ) ) } #pgc-3389-1-2 { width:43.9974%;width:calc(43.9974% - ( 0.56002638522427 * 0px ) ) } #pgc-3389-1-3 { width:6.0026%;width:calc(6.0026% - ( 0.93997361477573 * 0px ) ) } #pg-3389-1.panel-no-style, #pg-3389-1.panel-has-style > .panel-row-style { -webkit-align-items:flex-start;align-items:flex-start } #pgc-3389-1-0 { align-self:auto } /* Layout 10 */ #pgc-10-0-0 { width:100%;width:calc(100% - ( 0 * 0px ) ) } #pl-10 #panel-10-0-0-0 , #pl-10 #panel-10-1-0-0 , #pl-10 #panel-10-1-0-1 , #pl-10 #panel-10-1-1-0 , #pl-10 #panel-10-1-2-0 , #pl-10 #panel-10-2-0-0 , #pl-10 #panel-10-2-1-0 {  } #pg-10-0 , #pg-10-1 , #pl-10 .so-panel , #pl-10 .so-panel:last-child { margin-bottom:0px } #pgc-10-1-0 { width:49.6484%;width:calc(49.6484% - ( 0.50351617440225 * 0px ) ) } #pgc-10-1-1 { width:29.2546%;width:calc(29.2546% - ( 0.70745428973277 * 0px ) ) } #pgc-10-1-2 { width:21.097%;width:calc(21.097% - ( 0.78902953586498 * 0px ) ) } #pgc-10-2-0 { width:49.101%;width:calc(49.101% - ( 0.50899031811895 * 0px ) ) } #pgc-10-2-1 { width:50.899%;width:calc(50.899% - ( 0.49100968188105 * 0px ) ) } /* Layout 12 */ #pgc-12-0-0 { width:23%;width:calc(23% - ( 0.77 * 0px ) ) } #pl-12 #panel-12-0-0-0 , #pl-12 #panel-12-0-1-0 , #pl-12 #panel-12-0-2-0 , #pl-12 #panel-12-0-2-1 , #pl-12 #panel-12-0-3-0 {  } #pgc-12-0-1 { width:24.8571%;width:calc(24.8571% - ( 0.75142857142857 * 0px ) ) } #pgc-12-0-2 { width:27.1429%;width:calc(27.1429% - ( 0.72857142857143 * 0px ) ) } #pgc-12-0-3 { width:25%;width:calc(25% - ( 0.75 * 0px ) ) } #pl-12 .so-panel , #pl-12 .so-panel:last-child { margin-bottom:0px } </style><link rel='stylesheet' id='icomoon-css'  href='http://www.skyloungeamsterdam.com/wp-content/plugins/interconnect-it-weather-widget/images/icomoon/style.css?ver=4.8.7' type='text/css' media='all' />
+<link rel='stylesheet' id='siteorigin-panels-front-css'  href='http://www.skyloungeamsterdam.com/wp-content/plugins/siteorigin-panels/css/front-flex.min.css?ver=2.8.2' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.skyloungeamsterdam.com/wp-content/plugins/easy-fancybox/js/jquery.fancybox.1.3.22.min.js'></script>
+<script type='text/javascript'>
+var fb_timeout, fb_opts={'overlayShow':true,'hideOnOverlayClick':true,'showCloseButton':false,'width':560,'height':340,'margin':20,'centerOnScroll':true,'enableEscapeButton':true,'autoScale':true };
+if(typeof easy_fancybox_handler==='undefined'){
+var easy_fancybox_handler=function(){
+jQuery('.nofancybox,a.wp-block-file__button,a.pin-it-button,a[href*="pinterest.com/pin/create"],a[href*="facebook.com/share"],a[href*="twitter.com/share"]').addClass('nolightbox');
+/* iFrame */
+jQuery('a.fancybox-iframe,area.fancybox-iframe,li.fancybox-iframe a').each(function(){jQuery(this).fancybox(jQuery.extend({},fb_opts,{'type':'iframe','width':'50%','height':'70%','titleShow':false,'titlePosition':'float','titleFromAlt':true,'allowfullscreen':false}))});};
+jQuery('a.fancybox-close').on('click',function(e){e.preventDefault();jQuery.fancybox.close()});
+};
+var easy_fancybox_auto=function(){setTimeout(function(){jQuery('#fancybox-auto').trigger('click')},1000);};
+jQuery(easy_fancybox_handler);jQuery(document).on('post-load',easy_fancybox_handler);
+jQuery(easy_fancybox_auto);
+</script>
+<script type='text/javascript' src='http://www.skyloungeamsterdam.com/wp-content/plugins/easy-fancybox/js/jquery.mousewheel.3.1.13.min.js'></script>
+<script type='text/javascript' src='http://www.skyloungeamsterdam.com/wp-includes/js/wp-embed.min.js?ver=4.8.7'></script>
+<script type="text/javascript">
+			(function() {
+				var expirationDate = new Date();
+				expirationDate.setTime( expirationDate.getTime() + 31536000 * 1000 );
+				document.cookie = "pll_language=nl; expires=" + expirationDate.toUTCString() + "; path=/";
+			}());</script></html>
